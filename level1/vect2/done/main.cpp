@@ -1,4 +1,5 @@
-#include "vect2.hpp"
+//#include "vect2.hpp"
+#include "wip_vect2.hpp"
 #include <iostream>
 
 int main()
@@ -13,16 +14,18 @@ int main()
     std::cout << "v2: " << v2 << std::endl;
     std::cout << "v3: " << v3 << std::endl;
     std::cout << "v4: " << v4 << std::endl;
+	// return by reference
     std::cout << v4++ << std::endl; // 2, 3
     std::cout << ++v4 << std::endl; // 3, 4
     std::cout << v4-- << std::endl; // 2, 3
     std::cout << --v4 << std::endl; // 1, 2
+	// return by value
     v2 += v3; // 2, 4
     v1 -= v2; // -2, -4
     v2 = v3 + v3 *2; // 3, 6
-    /*v2 = 3 * v2; // 9, 18
+    v2 = 3 * v2; // 9, 18
     v2 += v2 += v3; // 20, 40
-    v1 *= 42; // -84, -168*/
+    v1 *= 42; // -84, -168
     v1 = v1 - v1 +v1;
     std::cout << "v1: " << v1 << std::endl;
     std::cout << "v2: " << v2 << std::endl;
@@ -31,8 +34,8 @@ int main()
     v1[1] = 12;
     std::cout << "v1[1]: " << v1[1] << std::endl;
     std::cout << "v3[1]: " << v3[1] << std::endl;
-    /*std::cout << "v1 == v3: " << (v1 == v3) << std::endl;
+    std::cout << "v1 == v3: " << (v1 == v3) << std::endl;
     std::cout << "v1 == v1: " << (v1 == v1) << std::endl;
     std::cout << "v1 != v3: " << (v1 != v3) << std::endl;
-    std::cout << "v1 != v1: " << (v1 != v1) << std::endl;*/
+    std::cout << "v1 != v1: " << (v1 != v1) << std::endl;
 }
