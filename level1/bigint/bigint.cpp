@@ -27,6 +27,10 @@ std::ostream &operator<<(std::ostream &os, const bigint &n) {
 	return os;
 }
 
+/* start from the last digit of both strings;
+ * add corresponding digits and carry;
+ * build the result from left to right;
+ * stop when both numbers are finished and carry is zero*/
 bigint bigint::operator+(const bigint &other) const {
 	bigint result;
 	result.n.clear();
@@ -49,22 +53,27 @@ bigint bigint::operator+(const bigint &other) const {
 	return result;
 }
 
+// call operator+ and assign the result to *this
 bigint &bigint::operator+=(const bigint &other) {
 	*this = *this + other;
 	return *this;
 }
 
+// prefix ++x returns the incremented object
 bigint &bigint::operator++() {
 	*this = *this + bigint(1);
 	return *this;
 }
 
+// postfix x++ saves a copy first, increments, then returns the old value
 bigint bigint::operator++(int) {
 	bigint temp = *this;
 	++(*this);
 	return temp;
 }
 
+/* returns a new object with a shifted version of the number
+ * left shift by n digits means append n zeros to the end (example: 42 << 3 = 42000) */
 bigint bigint::operator<<(unsigned int n) const {
 	bigint result = *this;
 	for (unsigned int i = 0; i < n; i++) {
@@ -73,6 +82,7 @@ bigint bigint::operator<<(unsigned int n) const {
 	return result;
 }
 
+// shifts the number in-place
 bigint &bigint::operator<<=(unsigned int n) {
 	for (unsigned int i = 0; i < n; i++) {
 		this->n += '0';
@@ -80,6 +90,9 @@ bigint &bigint::operator<<=(unsigned int n) {
 	return *this;
 }
 
+/* returns a new object with a shifted version of the number
+ * right shift by n digits means remove n digits from the end. (example: 1337 >> 2 = 13)
+ * if the shift is larger than the number length, the result should be 0.*/
 bigint bigint::operator>>(unsigned int n) const {
 	bigint result = *this;
 	if (n >= result.n.size()) {
@@ -90,6 +103,7 @@ bigint bigint::operator>>(unsigned int n) const {
 	return result;
 }
 
+// shifts the number in-place
 bigint &bigint::operator>>=(unsigned int n) {
 	if (n >= this->n.size()) {
 		this->n = "0";
