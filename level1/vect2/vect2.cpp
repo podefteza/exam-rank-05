@@ -1,5 +1,3 @@
-// TODO: create or comment comparing the changes from hpp to cpp
-
 #include "vect2.hpp"
 
 vect2::vect2() : x(0), y(0) {

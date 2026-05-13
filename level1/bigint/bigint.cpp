@@ -40,9 +40,12 @@ bigint bigint::operator+(const bigint &other) const {
 	int j = other.n.size() - 1;
 
 	while (i >= 0 || j >= 0 || carry != 0) {
-		int digit1 = (i >= 0) ? n[i] - '0' : 0;
-		int digit2 = (j >= 0) ? other.n[j] - '0' : 0;
-
+		int digit1 = 0;
+		if (i >= 0)
+			digit1 = n[i] - '0';
+		int digit2 = 0;
+		if (j >= 0)
+			digit2 = other.n[j] - '0';
 		int sum = digit1 + digit2 + carry;
 		result.n = char('0' + (sum % 10)) + result.n;
 		carry = sum / 10;
@@ -75,19 +78,34 @@ bigint bigint::operator++(int) {
 /* returns a new object with a shifted version of the number
  * left shift by n digits means append n zeros to the end (example: 42 << 3 = 42000) */
 bigint bigint::operator<<(unsigned int n) const {
+	if (this->n == "0")
+		return *this;
 	bigint result = *this;
 	for (unsigned int i = 0; i < n; i++) {
 		result.n += '0';
 	}
 	return result;
 }
+// overload for shifting by a bigint, convert the shift to unsigned int and call the previous operator
+bigint bigint::operator<<(const bigint &shift) const {
+	unsigned int n = std::stoul(shift.n);
+	return *this << n;
+}
 
 // shifts the number in-place
 bigint &bigint::operator<<=(unsigned int n) {
+	if (this->n == "0")
+		return *this;
 	for (unsigned int i = 0; i < n; i++) {
 		this->n += '0';
 	}
 	return *this;
+}
+
+// overload for shifting by a bigint, convert the shift to unsigned int and call the previous operator
+bigint &bigint::operator<<=(const bigint &shift) {
+	unsigned int n = std::stoul(shift.n);
+	return *this <<= n;
 }
 
 /* returns a new object with a shifted version of the number
@@ -103,6 +121,12 @@ bigint bigint::operator>>(unsigned int n) const {
 	return result;
 }
 
+// overload for shifting by a bigint, convert the shift to unsigned int and call the previous operator
+bigint bigint::operator>>(const bigint &shift) const {
+	unsigned int n = std::stoul(shift.n);
+	return *this >> n;
+}
+
 // shifts the number in-place
 bigint &bigint::operator>>=(unsigned int n) {
 	if (n >= this->n.size()) {
@@ -113,26 +137,14 @@ bigint &bigint::operator>>=(unsigned int n) {
 	return *this;
 }
 
-bigint bigint::operator<<(const bigint &shift) const {
-	unsigned int n = std::stoul(shift.n);
-	return *this << n;
-}
-
-bigint &bigint::operator<<=(const bigint &shift) {
-	unsigned int n = std::stoul(shift.n);
-	return *this <<= n;
-}
-
-bigint bigint::operator>>(const bigint &shift) const {
-	unsigned int n = std::stoul(shift.n);
-	return *this >> n;
-}
-
+// overload for shifting by a bigint, convert the shift to unsigned int and call the previous operator
 bigint &bigint::operator>>=(const bigint &shift) {
 	unsigned int n = std::stoul(shift.n);
 	return *this >>= n;
 }
 
+/* compare the lengths of the numbers first, if they are different, the longer number is greater;
+ * if they have the same length, compare them lexicographically (as strings) */
 bool bigint::operator<(const bigint &other) const {
 	if (this->n.size() != other.n.size()) {
 		return this->n.size() < other.n.size();

@@ -24,13 +24,12 @@ class bigint {
 		bigint operator++(int);
 
 		bigint operator<<(unsigned int n) const;
-		bigint &operator<<=(unsigned int n);
-		bigint operator>>(unsigned int n) const;
-		bigint &operator>>=(unsigned int n);
-
 		bigint operator<<(const bigint &n) const;
+		bigint &operator<<=(unsigned int n);
 		bigint &operator<<=(const bigint &n);
+		bigint operator>>(unsigned int n) const;
 		bigint operator>>(const bigint &n) const;
+		bigint &operator>>=(unsigned int n);
 		bigint &operator>>=(const bigint &n);
 
 		bool operator<(const bigint &other) const;
