@@ -38,13 +38,13 @@ fi
 # Create temporary folder
 TMP_DIR=$(mktemp -d)
 # Copy reference `life.c` from the tester location
-cp "$SCRIPT_DIR/life.c" "$TMP_DIR"/
+cp "$SCRIPT_DIR/reference_life.c" "$TMP_DIR"/
 # Copy user's .c and .h files, but do not overwrite the reference life.c
 find "$USER_DIR" -maxdepth 1 -type f \( -name "*.c" -o -name "*.h" \) ! -name "life.c" -exec cp {} "$TMP_DIR"/ \;
 cd "$TMP_DIR" || exit 1
 
 # Compile reference (capture output for debugging)
-gcc -Wall -Wextra -Werror -std=c99 -o ref_life life.c >ref_compile.log 2>&1
+gcc -Wall -Wextra -Werror -std=c99 -o reference_life reference_life.c >ref_compile.log 2>&1
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Reference compilation failed in TMP_DIR! See below for errors:${NC}"
     sed -n '1,200p' ref_compile.log
@@ -73,7 +73,7 @@ run_test() {
     local ref_out="ref_${test_name}.txt"
     local user_out="user_${test_name}.txt"
 
-    echo "$input" | ./ref_life "$rows" "$cols" "$iter" > "$ref_out" 2>&1
+    echo "$input" | ./reference_life "$rows" "$cols" "$iter" > "$ref_out" 2>&1
     echo "$input" | ./user_life "$rows" "$cols" "$iter" > "$user_out" 2>&1
 
     if diff -q "$ref_out" "$user_out" >/dev/null; then
