@@ -2,22 +2,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static void init_board(int height, int width, int board[height][width])
-{
+static void init_board(int height, int width, int board[height][width]) {
 	for (int row = 0; row < height; row++)
 		for (int col = 0; col < width; col++)
 			board[row][col] = 0;
 }
 
-static void draw_board(int height, int width, int board[height][width])
-{
+static void draw_board(int height, int width, int board[height][width]) {
 	int penrow = 0;
 	int pencol = 0;
 	int pen = 0;
 	char c;
 
-	while (read(0, &c, 1) > 0)
-	{
+	while (read(0, &c, 1) > 0) {
 		if (c == 'w' && penrow > 0)
 			penrow--;
 		else if (c == 's' && penrow < height - 1)
@@ -34,14 +31,11 @@ static void draw_board(int height, int width, int board[height][width])
 	}
 }
 
-static int count_neighbors(int height, int width, int board[height][width], int row, int col)
-{
-	int n = 0;
+static int count_neighbors(int height, int width, int board[height][width], int row, int col) {
+	int neighbors = 0;
 
-	for (int drow = -1; drow <= 1; drow++)
-	{
-		for (int dcol = -1; dcol <= 1; dcol++)
-		{
+	for (int drow = -1; drow <= 1; drow++) {
+		for (int dcol = -1; dcol <= 1; dcol++) {
 			int nrow;
 			int ncol;
 
@@ -50,30 +44,25 @@ static int count_neighbors(int height, int width, int board[height][width], int 
 			nrow = row + drow;
 			ncol = col + dcol;
 			if (ncol >= 0 && ncol < width && nrow >= 0 && nrow < height)
-				n += board[nrow][ncol];
+				neighbors += board[nrow][ncol];
 		}
 	}
-	return n;
+	return neighbors;
 }
 
-static void compute_next_state(int height, int width, int board[height][width], int next[height][width])
-{
-	for (int row = 0; row < height; row++)
-	{
-		for (int col = 0; col < width; col++)
-		{
-			int n = count_neighbors(height, width, board, row, col);
+static void compute_next_state(int height, int width, int board[height][width], int next[height][width]) {
+	for (int row = 0; row < height; row++) {
+		for (int col = 0; col < width; col++) {
+			int neighbors = count_neighbors(height, width, board, row, col);
 
-			if (board[row][col] == 1)
-			{
-				if (n == 2 || n == 3)
+			if (board[row][col] == 1) {
+				if (neighbors == 2 || neighbors == 3)
 					next[row][col] = 1;
 				else
 					next[row][col] = 0;
 			}
-			else
-			{
-				if (n == 3)
+			else {
+				if (neighbors == 3)
 					next[row][col] = 1;
 				else
 					next[row][col] = 0;
@@ -82,21 +71,15 @@ static void compute_next_state(int height, int width, int board[height][width], 
 	}
 }
 
-static void copy_board(int height, int width, int board[height][width], int next[height][width])
-{
+static void copy_board(int height, int width, int board[height][width], int next[height][width]) {
 	for (int row = 0; row < height; row++)
-	{
 		for (int col = 0; col < width; col++)
 			board[row][col] = next[row][col];
-	}
 }
 
-static void print_board(int height, int width, int board[height][width])
-{
-	for (int row = 0; row < height; row++)
-	{
-		for (int col = 0; col < width; col++)
-		{
+static void print_board(int height, int width, int board[height][width]) {
+	for (int row = 0; row < height; row++) {
+		for (int col = 0; col < width; col++) {
 			if (board[row][col] == 1)
 				putchar('0');
 			else
