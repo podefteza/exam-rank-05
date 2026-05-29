@@ -76,11 +76,10 @@ void next_state(int height, int width, int board[height][width], int next[height
 void copy_board(int height, int width, int board[height][width], int next[height][width]) {
 	for (int row = 0; row < height; row++) {
 		for (int col = 0; col < width; col++) {
-			next[row][col] = board[row][col];
+			board[row][col] = next[row][col];
 		}
 	}
 }
-
 
 void print_board(int height, int width, int board[height][width]) {
 	for (int row = 0; row < height; row++) {
@@ -111,7 +110,7 @@ int main(int argc, char **argv) {
 
 	while (iter-- > 0) {
 		next_state(height, width, board, next);
-		copy_board(height, width, next, board);
+		copy_board(height, width, board, next);
 	}
 
 	print_board(height, width, board);
