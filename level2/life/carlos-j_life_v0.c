@@ -82,12 +82,12 @@ static void compute_next_state(int height, int width, int board[height][width], 
 	}
 }
 
-static void copy_board(int height, int width, int source[height][width], int destination[height][width])
+static void copy_board(int height, int width, int board[height][width], int next[height][width])
 {
 	for (int row = 0; row < height; row++)
 	{
 		for (int col = 0; col < width; col++)
-			destination[row][col] = source[row][col];
+			board[row][col] = next[row][col];
 	}
 }
 
@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
 	draw_board(height, width, board);
 	while (iter-- > 0) {
 		compute_next_state(height, width, board, next);
-		copy_board(height, width, next, board);
+		copy_board(height, width, board, next);
 	}
 
 	print_board(height, width, board);
