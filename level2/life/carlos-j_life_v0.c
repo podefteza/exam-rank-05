@@ -2,13 +2,17 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static void init_board(int height, int width, int board[height][width]) {
-	for (int row = 0; row < height; row++)
-		for (int col = 0; col < width; col++)
+int HEIGHT;
+int WIDTH;
+int ITER;
+
+static void init_board(int board[HEIGHT][WIDTH]) {
+	for (int row = 0; row < HEIGHT; row++)
+		for (int col = 0; col < WIDTH; col++)
 			board[row][col] = 0;
 }
 
-static void draw_board(int height, int width, int board[height][width]) {
+static void draw_board(int board[HEIGHT][WIDTH]) {
 	int penrow = 0;
 	int pencol = 0;
 	int pen = 0;
@@ -17,11 +21,11 @@ static void draw_board(int height, int width, int board[height][width]) {
 	while (read(0, &c, 1) > 0) {
 		if (c == 'w' && penrow > 0)
 			penrow--;
-		else if (c == 's' && penrow < height - 1)
+		else if (c == 's' && penrow < HEIGHT - 1)
 			penrow++;
 		else if (c == 'a' && pencol > 0)
 			pencol--;
-		else if (c == 'd' && pencol < width - 1)
+		else if (c == 'd' && pencol < WIDTH - 1)
 			pencol++;
 		else if (c == 'x')
 			pen = !pen;
@@ -31,7 +35,7 @@ static void draw_board(int height, int width, int board[height][width]) {
 	}
 }
 
-static int count_neighbors(int height, int width, int board[height][width], int row, int col) {
+static int count_neighbors(int board[HEIGHT][WIDTH], int row, int col) {
 	int neighbors = 0;
 
 	for (int drow = -1; drow <= 1; drow++) {
@@ -43,17 +47,17 @@ static int count_neighbors(int height, int width, int board[height][width], int 
 				continue;
 			nrow = row + drow;
 			ncol = col + dcol;
-			if (ncol >= 0 && ncol < width && nrow >= 0 && nrow < height)
+			if (ncol >= 0 && ncol < WIDTH && nrow >= 0 && nrow < HEIGHT)
 				neighbors += board[nrow][ncol];
 		}
 	}
 	return neighbors;
 }
 
-static void compute_next_state(int height, int width, int board[height][width], int next[height][width]) {
-	for (int row = 0; row < height; row++) {
-		for (int col = 0; col < width; col++) {
-			int neighbors = count_neighbors(height, width, board, row, col);
+static void compute_next_state(int board[HEIGHT][WIDTH], int next[HEIGHT][WIDTH]) {
+	for (int row = 0; row < HEIGHT; row++) {
+		for (int col = 0; col < WIDTH; col++) {
+			int neighbors = count_neighbors(board, row, col);
 
 			if (board[row][col] == 1) {
 				if (neighbors == 2 || neighbors == 3)
@@ -71,17 +75,17 @@ static void compute_next_state(int height, int width, int board[height][width], 
 	}
 }
 
-static void copy_board(int height, int width, int board[height][width], int next[height][width]) {
-	for (int row = 0; row < height; row++)
-		for (int col = 0; col < width; col++)
+static void copy_board(int board[HEIGHT][WIDTH], int next[HEIGHT][WIDTH]) {
+	for (int row = 0; row < HEIGHT; row++)
+		for (int col = 0; col < WIDTH; col++)
 			board[row][col] = next[row][col];
 }
 
-static void print_board(int height, int width, int board[height][width]) {
-	for (int row = 0; row < height; row++) {
-		for (int col = 0; col < width; col++) {
+static void print_board(int board[HEIGHT][WIDTH]) {
+	for (int row = 0; row < HEIGHT; row++) {
+		for (int col = 0; col < WIDTH; col++) {
 			if (board[row][col] == 1)
-				putchar('0');
+				putchar('O');
 			else
 				putchar(' ');
 		}
@@ -91,23 +95,23 @@ static void print_board(int height, int width, int board[height][width]) {
 
 int main(int argc, char **argv) {
 	if (argc != 4)
-		return (0);
+		return (1);
 
-	int width = atoi(argv[1]);
-	int height = atoi(argv[2]);
-	int iter = atoi(argv[3]);
+	WIDTH = atoi(argv[1]);
+	HEIGHT = atoi(argv[2]);
+	ITER = atoi(argv[3]);
 
-	int board[height][width];
-	int next[height][width];
+	int board[HEIGHT][WIDTH];
+	int next[HEIGHT][WIDTH];
 
-	init_board(height, width, board);
-	draw_board(height, width, board);
-	while (iter-- > 0) {
-		compute_next_state(height, width, board, next);
-		copy_board(height, width, board, next);
+	init_board(board);
+	draw_board(board);
+	while (ITER-- > 0) {
+		compute_next_state(board, next);
+		copy_board(board, next);
 	}
 
-	print_board(height, width, board);
+	print_board(board);
 
 	return (0);
 }
