@@ -6,86 +6,77 @@ int HEIGHT;
 int WIDTH;
 int ITER;
 
-static void init_board(int board[HEIGHT][WIDTH]) {
+void init_board(int board[HEIGHT][WIDTH]) {
 	for (int row = 0; row < HEIGHT; row++)
 		for (int col = 0; col < WIDTH; col++)
 			board[row][col] = 0;
 }
 
-static void draw_board(int board[HEIGHT][WIDTH]) {
-	int penrow = 0;
-	int pencol = 0;
+void draw_board(int board[HEIGHT][WIDTH]) {
+	int row = 0;
+	int col = 0;
 	int pen = 0;
 	char c;
 
 	while (read(0, &c, 1) > 0) {
-		if (c == 'w' && penrow > 0)
-			penrow--;
-		else if (c == 's' && penrow < HEIGHT - 1)
-			penrow++;
-		else if (c == 'a' && pencol > 0)
-			pencol--;
-		else if (c == 'd' && pencol < WIDTH - 1)
-			pencol++;
+		if (c == 'w' && row > 0)
+			row--;
+		else if (c == 's' && row < HEIGHT - 1)
+			row++;
+		else if (c == 'a' && col > 0)
+			col--;
+		else if (c == 'd' && col < WIDTH - 1)
+			col++;
 		else if (c == 'x')
 			pen = !pen;
 
 		if (pen)
-			board[penrow][pencol] = 1;
+			board[row][col] = 1;
 	}
 }
 
-static int count_neighbors(int board[HEIGHT][WIDTH], int row, int col) {
+int count_neighbors(int board[HEIGHT][WIDTH], int row, int col) {
 	int neighbors = 0;
 
 	for (int drow = -1; drow <= 1; drow++) {
 		for (int dcol = -1; dcol <= 1; dcol++) {
-			int nrow;
-			int ncol;
+			int nrow = row + drow;
+			int ncol = col + dcol;
 
-			if (dcol == 0 && drow == 0)
+			if (nrow < 0 || nrow >= HEIGHT || ncol < 0 || ncol >= WIDTH || (drow == 0 && dcol == 0))
 				continue;
-			nrow = row + drow;
-			ncol = col + dcol;
-			if (ncol >= 0 && ncol < WIDTH && nrow >= 0 && nrow < HEIGHT)
-				neighbors += board[nrow][ncol];
+
+			if (board[nrow][ncol] == 1)
+				neighbors++;
 		}
 	}
 	return neighbors;
 }
 
-static void compute_next_state(int board[HEIGHT][WIDTH], int next[HEIGHT][WIDTH]) {
+void compute_next_state(int board[HEIGHT][WIDTH], int next[HEIGHT][WIDTH]) {
 	for (int row = 0; row < HEIGHT; row++) {
 		for (int col = 0; col < WIDTH; col++) {
 			int neighbors = count_neighbors(board, row, col);
 
-			if (board[row][col] == 1) {
-				if (neighbors == 2 || neighbors == 3)
-					next[row][col] = 1;
-				else
-					next[row][col] = 0;
-			}
-			else {
-				if (neighbors == 3)
-					next[row][col] = 1;
-				else
-					next[row][col] = 0;
-			}
+			if (board[row][col] == 1)
+				next[row][col] = (neighbors == 2 || neighbors == 3);
+			else
+				next[row][col] = (neighbors == 3);
 		}
 	}
 }
 
-static void copy_board(int board[HEIGHT][WIDTH], int next[HEIGHT][WIDTH]) {
+void copy_board(int board[HEIGHT][WIDTH], int next[HEIGHT][WIDTH]) {
 	for (int row = 0; row < HEIGHT; row++)
 		for (int col = 0; col < WIDTH; col++)
 			board[row][col] = next[row][col];
 }
 
-static void print_board(int board[HEIGHT][WIDTH]) {
+void print_board(int board[HEIGHT][WIDTH]) {
 	for (int row = 0; row < HEIGHT; row++) {
 		for (int col = 0; col < WIDTH; col++) {
 			if (board[row][col] == 1)
-				putchar('O');
+				putchar('0');
 			else
 				putchar(' ');
 		}
